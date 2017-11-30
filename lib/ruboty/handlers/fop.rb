@@ -38,8 +38,8 @@ CARD:
 
 CLASS: #{fop.valid_dom_classes.map { |_| "`#{_.code}` #{_.name}" }.join(", ")}
 FARE:
-#{fop.valid_dom_fares.map { |_| "- dom: `#{_.code}` #{_.name}: #{_.remark}" }.join("\n")}
-#{fop.valid_intl_fares.map { |_| "- intl: `#{_.code}` #{_.name}: #{_.remark}" }.join("\n")}
+#{fop.valid_dom_fares.map { |_| "- dom: `#{_.code}` #{_.name}: #{_.remark.gsub(/\*|_/,'')}" }.join("\n")}
+#{fop.valid_intl_fares.map { |_| "- intl: `#{_.code}` #{_.name}: #{_.remark.gsub(/\*|_/,'')}" }.join("\n")}
         EOF
       rescue ::Fop::Error
         message.reply e.inspect
@@ -132,11 +132,11 @@ FARE:
 *round-trip #{result.miles * 2} miles, #{result.fop * 2} FOP*
 
 Mileage:
-- #{result.flight_miles} (#{result.flight_miles_remark})
-#{result.bonus_miles ? "- #{result.bonus_miles} (#{result.bonus_miles_remark})" : nil}
+- #{result.flight_miles} (#{result.flight_miles_remark.gsub(/\*|_/,'')})
+#{result.bonus_miles ? "- #{result.bonus_miles} (#{result.bonus_miles_remark.gsub(/\*|_/,'')})" : nil}
 FOP:
 - #{result.flight_miles} * #{result.fop_rate}
-#{result.fop_bonus ? "- #{result.fop_bonus } (#{result.fop_bonus_remark})" : nil}
+#{result.fop_bonus ? "- #{result.fop_bonus } (#{result.fop_bonus_remark.gsub(/\*|_/,'')})" : nil}
         EOF
       rescue ::Fop::Error => e
         message.reply e.message
@@ -191,7 +191,7 @@ FOP:
       def find_dom_fare(str)
         fare = fop.valid_dom_fares.find { |_| _.code == str }
         unless fare
-          list = fop.valid_dom_fares.map { |_| "- `#{_.code}` #{_.name}: #{_.remark}" }.join("\n")
+          list = fop.valid_dom_fares.map { |_| "- `#{_.code}` #{_.name}: #{_.remark.gsub(/\*|_/,'')}" }.join("\n")
           if str
             raise ::Fop::Error, "fare #{str.inspect} is not valid\n#{list}"
           else
@@ -204,7 +204,7 @@ FOP:
       def find_intl_fare(str)
         fare = fop.valid_intl_fares.find { |_| _.code == str }
         unless fare
-          list = fop.valid_intl_fares.map { |_| "- `#{_.code}` #{_.name}: #{_.remark}" }.join("\n")
+          list = fop.valid_intl_fares.map { |_| "- `#{_.code}` #{_.name}: #{_.remark.gsub(/\*|_/,'')}" }.join("\n")
           if str
             raise ::Fop::Error, "fare #{str.inspect} is not valid\n#{list}"
           else
