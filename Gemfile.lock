@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ruboty-fop (0.0.2)
+    ruboty-fop (0.0.3)
       fop
       ruboty
 
