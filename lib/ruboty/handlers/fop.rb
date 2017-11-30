@@ -21,23 +21,24 @@ module Ruboty
 
       def fop_help(message)
         message.reply <<-EOF
-Usage:
+#{bold}Usage:#{bold}
   ruboty fop help
   ruboty fop list {dom|intl} airports [filter]
   ruboty fop dom FROM-TO [-class CLASS] [-fare FARE] [-card CARD] [-status STATUS]
   ruboty fop intl FROM-TO [-fare FARE] [-card CARD] [-status STATUS]
   ruboty fop prefer [-class CLASS] [-fare-dom FARE] [-fare-intl FARE] [-card CARD] [-status STATUS]
 
-Example:
+#{bold}Example:#{bold}
   ruboty fop prefer -card global -status sapphire
   ruboty fop dom TYO-OKA -class J -fare discount
 
-STATUS: #{fop.valid_statuses.map { |_| "`#{_.code}` #{_.name}" }.join(", ")}
-CARD:
+#{bold}CLASS:#{bold} #{fop.valid_dom_classes.map { |_| "`#{_.code}` #{_.name}" }.join(", ")}
+#
+#{bold}STATUS:#{bold} #{fop.valid_statuses.map { |_| "`#{_.code}` #{_.name}" }.join(", ")}
+#{bold}CARD:#{bold}
 #{fop.valid_cards.map { |_| "- `#{_.code}` #{_.name}" }.join("\n")}
 
-CLASS: #{fop.valid_dom_classes.map { |_| "`#{_.code}` #{_.name}" }.join(", ")}
-FARE:
+#{bold}FARE:#{bold}
 #{fop.valid_dom_fares.map { |_| "- dom: `#{_.code}` #{_.name}: #{_.remark.gsub(/\*|_/,'')}" }.join("\n")}
 #{fop.valid_intl_fares.map { |_| "- intl: `#{_.code}` #{_.name}: #{_.remark.gsub(/\*|_/,'')}" }.join("\n")}
         EOF
@@ -126,17 +127,17 @@ FARE:
 
         message.reply <<-EOF
 #{from.code} (#{from.name}) - #{to.code} (#{to.name})
-#{klass ? "#{klass.name}, " : nil}#{fare.name}, #{status.name} (#{card.name})
+#{klass ? "#{klass.name}, " : nil}#{fare.name}
+#{status.name} (#{card.name})
 
 #{bold}single-trip #{result.miles} miles, #{result.fop} FOP#{bold}
 #{italic}round-trip #{result.miles * 2} miles, #{result.fop * 2} FOP#{italic}
 
 #{bold}Mileage:#{bold}
-- #{result.flight_miles} (#{result.flight_miles_remark.gsub(/\*|_/,'')})
-#{result.bonus_miles ? "- #{result.bonus_miles} (#{result.bonus_miles_remark.gsub(/\*|_/,'')})" : nil}
-#{bold}FOP:#{bold}
-#{result.flight_miles} x #{result.fop_rate}
-#{result.fop_bonus ? "- #{result.fop_bonus } (#{result.fop_bonus_remark.gsub(/\*|_/,'')})" : nil}
+#{result.flight_miles} (#{result.flight_miles_remark.gsub(/\*|_/,'')})
+#{result.bonus_miles ? "+ #{result.bonus_miles} (#{result.bonus_miles_remark.gsub(/\*|_/,'')})" : nil}
+
+#{bold}FOP:#{bold} #{result.flight_miles} x #{result.fop_rate} + #{result.fop_bonus ? "#{result.fop_bonus}\n(#{result.fop_bonus_remark.gsub(/\*|_/,'')})" : nil}
         EOF
       rescue ::Fop::Error => e
         message.reply e.message
