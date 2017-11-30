@@ -14,9 +14,6 @@ module Ruboty
         'KIX' => 'OSA',
       }
 
-      on(/imascg(?:\s+?(?<mode>.+?))?(?:\s+?me)?\s+(?<query>.+)$/, name: 'imascg', description: 'find imascg cards')
-      on(/imascg flush cache/, name: 'imascg_flush', description: 'flush imascg query cache')
-
       on(/fop\s+help$/, name: 'fop_help', description: 'JAL calculator help')
       on(/fop\s+list(?:(?:\s+airports?)?(?:\s+(?<filter>.+))?)?$/, name: 'fop_airports', description: 'JAL calculator: List airports')
       on(/fop\s+(?:I\s+)?prefer(?<options>(?:\s+-(?:class|(?:dom|intl)-fare|card|status)\s+[^\s]+)*)\s*$/i, name: 'fop_prefer', description: 'JAL calculator: Set preference')
@@ -155,7 +152,7 @@ FOP:
         else
           options.each do |k, v|
             case k
-            when :class; find_class(v)
+            when :class; find_dom_class(v)
             when :'dom-fare'; find_dom_fare(v)
             when :'intl-fare'; find_intl_fare(v)
             when :card; find_card(v)
