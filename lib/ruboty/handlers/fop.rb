@@ -128,14 +128,14 @@ FARE:
 #{from.code} (#{from.name}) - #{to.code} (#{to.name})
 #{klass ? "#{klass.name}, " : nil}#{fare.name}, #{status.name} (#{card.name})
 
-*single-trip #{result.miles} miles, #{result.fop} FOP*
-*round-trip #{result.miles * 2} miles, #{result.fop * 2} FOP*
+#{bold}single-trip #{result.miles} miles, #{result.fop} FOP#{bold}
+#{italic}round-trip #{result.miles * 2} miles, #{result.fop * 2} FOP#{italic}
 
-Mileage:
+#{bold}Mileage:#{bold}
 - #{result.flight_miles} (#{result.flight_miles_remark.gsub(/\*|_/,'')})
 #{result.bonus_miles ? "- #{result.bonus_miles} (#{result.bonus_miles_remark.gsub(/\*|_/,'')})" : nil}
-FOP:
-- #{result.flight_miles} * #{result.fop_rate}
+#{bold}FOP:#{bold}
+#{result.flight_miles} x #{result.fop_rate}
 #{result.fop_bonus ? "- #{result.fop_bonus } (#{result.fop_bonus_remark.gsub(/\*|_/,'')})" : nil}
         EOF
       rescue ::Fop::Error => e
@@ -247,6 +247,20 @@ FOP:
 
       def parse_options(str)
         str&.scan(/-(.+?) (.+?)(?:\s+|$)/)&.map{ |_| [_[0].to_sym, _[1]] }.to_h || {}
+      end
+
+      def bold
+       markdown? ? '**' : '*'
+      end
+
+      def italic
+        '_'
+      end
+
+      def markdown?
+        return @use_markdown if @markdown_detected
+        @markdown_detected = true
+        @use_markdown = ENV['RUBOTY_FOP_MARKDOWN'] || Ruboty::AdapterBuilder.adapter_classes.last.name.include?('Discord')
       end
     end
   end
